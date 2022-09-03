@@ -8,7 +8,7 @@
 .investingDetail_info {
   position: relative;
   width: 575px;
-  height: 1000px;
+  height: auto;
   left: 0;
 }
 .investingDetail_info .investNft_wrap {
