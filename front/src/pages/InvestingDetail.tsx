@@ -6,25 +6,24 @@ import { Toast } from "../components/Modals/Toast";
 import { VaultInfo } from "../models/VaultInfo";
 import { ReactComponent as WishList } from "../components/asset/wishlist_default.svg";
 import { ReactComponent as Infoicon } from "../components/asset/info_icon.svg";
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import { IERC20__factory, NftWrappingManager__factory } from "contract";
 import { useDepositInfo } from "../hooks/useDepositInfo";
 import data from "../utils/TokenAddressMapper.json";
 import { useAvailableInfo } from "../hooks/useAvailableInfo";
 import { useSell } from "../hooks/useSell";
 
-
 interface RouteState {
   state: {
     assetAddress: string;
-    vaultInfo : VaultInfo;
-    svg : string;
+    vaultInfo: VaultInfo;
+    svg: string;
   };
 }
 
 interface toastProperties {
   data:
-    {
+    | {
         title: string;
         description: string;
         backgroundColor: string;
@@ -34,10 +33,10 @@ interface toastProperties {
 }
 
 function InvestingDetail({ currentAccount, setCurrentPage }: any) {
-  setCurrentPage("");
+  setCurrentPage("investing");
   const { address } = useParams();
   const { state } = useLocation() as RouteState;
-  const available = useAvailableInfo(currentAccount, state.vaultInfo); 
+  const available = useAvailableInfo(currentAccount, state.vaultInfo);
 
   const [amount, setAmount] = useState("0");
   const [sellAmount, setSellAmount] = useState("0");
@@ -51,14 +50,14 @@ function InvestingDetail({ currentAccount, setCurrentPage }: any) {
     state.assetAddress
   );
 
-  const {sell, sellTxStatus} = useSell(state.vaultInfo);
+  const { sell, sellTxStatus } = useSell(state.vaultInfo);
   const handleChange = (e: any) => {
     setAmount(e.target.value);
   };
 
-  const handleSellChange=(e:any) => {
+  const handleSellChange = (e: any) => {
     setSellAmount(e.target.value);
-  }
+  };
 
   const [toastList, setToastList] = useState<
     toastProperties["data"] | undefined
@@ -102,13 +101,13 @@ function InvestingDetail({ currentAccount, setCurrentPage }: any) {
     setToastList(undefined);
   };
 
-  const formatDate = (date:string) => {
+  const formatDate = (date: string) => {
     const split = date.split(".");
-  }
+  };
 
-  const getTokenIcon = (address:string) => {
-    return data.find(x => x.address === address)?.logo;
-  }
+  const getTokenIcon = (address: string) => {
+    return data.find((x) => x.address === address)?.logo;
+  };
 
   useEffect(() => {
     showToast(txStatus);
@@ -120,22 +119,22 @@ function InvestingDetail({ currentAccount, setCurrentPage }: any) {
       <div className="investingDetail_Wrap">
         <div className="investingDetail_info">
           <div className="investNft_wrap">
-          <object 
-            type = "image/svg+xml" 
-            className = "nft_img" 
-            data = {state.svg} />
+            <object type="image/svg+xml" className="nft_img" data={state.svg} />
           </div>
           <div className="iD_about">
             <div className="subTitle">
               <span className="subTitle_txt QUINOAheadline6">About</span>
               <div className="st_underline"></div>
             </div>
-            <div className={showMore ? "about_txtwrap_active" : "about_txtwrap"}>
+            <div
+              className={showMore ? "about_txtwrap_active" : "about_txtwrap"}
+            >
               {/* CSS NEED TO BE FIXED */}
-              <span className={showMore ? "atBtn_focused" : "atBtn_default"} 
-              onClick = {() => setShowMore(!showMore)}
+              <span
+                className={showMore ? "atBtn_focused" : "atBtn_default"}
+                onClick={() => setShowMore(!showMore)}
               ></span>
-              
+
               <span className="about_txt">
                 This fund provides exposure to blue-chip companies, being those
                 which are large, stable and profitable. This includes household
@@ -169,15 +168,25 @@ function InvestingDetail({ currentAccount, setCurrentPage }: any) {
               <div className="header_underline"></div>
               <div className="list_tokens">
                 <div className="lt_token">
-                  <img src={getTokenIcon(state.vaultInfo.asset)} className="lt_token_icon"></img>
-                  <span className="lt_token_txt QUINOABody-2">{state.vaultInfo.symbol}</span>
+                  <img
+                    src={getTokenIcon(state.vaultInfo.asset)}
+                    className="lt_token_icon"
+                  ></img>
+                  <span className="lt_token_txt QUINOABody-2">
+                    {state.vaultInfo.symbol}
+                  </span>
                 </div>
                 <div className="lt_Amount">
                   <span className="lt_Amount_txt QUINOABody-1">
-                    {Number(ethers.utils.formatEther(state.vaultInfo.totalAssets)).toFixed(2)}</span>
+                    {Number(
+                      ethers.utils.formatEther(state.vaultInfo.totalAssets)
+                    ).toFixed(2)}
+                  </span>
                 </div>
                 <div className="lt_Volume">
-                  <span className="lt_Volume_txt QUINOABody-1">${state.vaultInfo.totalVolume}</span>
+                  <span className="lt_Volume_txt QUINOABody-1">
+                    ${state.vaultInfo.totalVolume}
+                  </span>
                 </div>
                 <div className="ratioLine_wrap">
                   <div
@@ -266,27 +275,49 @@ function InvestingDetail({ currentAccount, setCurrentPage }: any) {
           </div>
           <div className="buyNsell">
             <div className="tab">
-              <div className={buySell==="buy" ?"buy_tab" : "sell_tab"}
-                onClick={() => setBuySell(("buy"))}>
-                <span className={buySell==="buy" ?"buy_txt" : "sell_txt"}>Buy</span>
+              <div
+                className={buySell === "buy" ? "buy_tab" : "sell_tab"}
+                onClick={() => setBuySell("buy")}
+              >
+                <span className={buySell === "buy" ? "buy_txt" : "sell_txt"}>
+                  Buy
+                </span>
                 <div className="line"></div>
               </div>
-              <div className={buySell==="sell" ? "buy_tab" : "sell_tab"}
-                onClick={() => setBuySell(("sell"))}>
-                <span className={buySell==="sell" ?"buy_txt" : "sell_txt"}>Sell</span>
+              <div
+                className={buySell === "sell" ? "buy_tab" : "sell_tab"}
+                onClick={() => setBuySell("sell")}
+              >
+                <span className={buySell === "sell" ? "buy_txt" : "sell_txt"}>
+                  Sell
+                </span>
                 <div className="line"></div>
               </div>
             </div>
-            <div className="buysection_wrap" style={buySell=== "buy" ? {display:"flex"} : {display : "none"}}>
+            <div
+              className="buysection_wrap"
+              style={
+                buySell === "buy" ? { display: "flex" } : { display: "none" }
+              }
+            >
               <div className="amountInvested">
                 <span className="ai_txt">amount invested</span>
-                <span className="ai_amount">{available?.availableSaleAmount} {state.vaultInfo.symbol}</span>
+                <span className="ai_amount">
+                  {available?.availableSaleAmount} {state.vaultInfo.symbol}
+                </span>
               </div>
               <div className="investableAmount">
                 <span className="ia_txt">Investable amount</span>
-                <span className="ia_amount">{available?.availableBuyAmount} {state.vaultInfo.symbol}</span>
+                <span className="ia_amount">
+                  {available?.availableBuyAmount} {state.vaultInfo.symbol}
+                </span>
               </div>
-              <input className="inputAmount" placeholder="$0,000.0" value={amount.toString()} onChange={handleChange}></input>
+              <input
+                className="inputAmount"
+                placeholder="$0,000.0"
+                value={amount.toString()}
+                onChange={handleChange}
+              ></input>
               <div className="amount_select_btn">
                 <span className="amount_10%">10%</span>
                 <div className="spaceLine"></div>
@@ -301,16 +332,33 @@ function InvestingDetail({ currentAccount, setCurrentPage }: any) {
                 <span className="cv_amount">34.32</span>
                 <span className="eTH">ETH</span>
               </div>
-              <div className="buyBtn" onClick={() => buy(amount, currentAccount, address, state.assetAddress)} >
+              <div
+                className="buyBtn"
+                onClick={() =>
+                  buy(amount, currentAccount, address, state.assetAddress)
+                }
+              >
                 <span className="buy_txt">Buy</span>
               </div>
             </div>
-            <div className="sellsection_wrap" style={buySell=== "sell" ? {display:"flex"} : {display : "none"}}>
+            <div
+              className="sellsection_wrap"
+              style={
+                buySell === "sell" ? { display: "flex" } : { display: "none" }
+              }
+            >
               <div className="investablesaleAmount">
                 <span className="isa_txt">available sale amount</span>
-                <span className="isa_amount">{available?.availableSaleAmount} {state.vaultInfo.symbol}</span>
+                <span className="isa_amount">
+                  {available?.availableSaleAmount} {state.vaultInfo.symbol}
+                </span>
               </div>
-              <input className="inputAmount" placeholder="$0,000.0" value={sellAmount.toString()} onChange={handleSellChange}></input>
+              <input
+                className="inputAmount"
+                placeholder="$0,000.0"
+                value={sellAmount.toString()}
+                onChange={handleSellChange}
+              ></input>
               <div className="amount_select_btn">
                 <span className="amount_10%">10%</span>
                 <div className="spaceLine"></div>
