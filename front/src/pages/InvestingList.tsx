@@ -5,6 +5,7 @@ import { ReactComponent as Quinoalogo } from "../components/asset/quinoa_logo.sv
 import { ReactComponent as Mibtnarrow } from "../components/asset/mibtn_arrow.svg";
 import { ReactComponent as Infoicon } from "../components/asset/info_icon.svg";
 import { ReactComponent as WishList } from "../components/asset/wishlist_default.svg";
+
 import { Link } from "react-router-dom";
 import SwiperCore, { Navigation, Pagination, Scrollbar } from "swiper";
 // Import Swiper React components
@@ -20,10 +21,11 @@ import "swiper/css/scrollbar";
 import { useVaultList } from "../hooks/useVaultList";
 import { assert } from "console";
 import { useHoldingInfo } from "../hooks/useHoldingInfo";
+import ISwitcher from "../components/asset/icons/i-switcher";
 
 SwiperCore.use([Navigation, Pagination, Scrollbar]);
 // {key :val, key:val}
-function InvestingList({ currentAccount, setCurrentPage }:any) {
+function InvestingList({ currentAccount, setCurrentPage }: any) {
   setCurrentPage("investing");
   const vaultList = useVaultList(currentAccount);
   const holdingInfo = useHoldingInfo(currentAccount);
@@ -75,7 +77,8 @@ function InvestingList({ currentAccount, setCurrentPage }:any) {
         <div className="bannerLine_01"></div>
         <div className="bannerLine_02"></div>
       </section>
-      <section className="exploreInvesting">
+      <section className="section_whitespace"></section>
+      {/* <section className="exploreInvesting">
         <div className="ei_wrap">
           <div className="ei_title">
             <span className="explore">Explore</span>
@@ -88,7 +91,7 @@ function InvestingList({ currentAccount, setCurrentPage }:any) {
             B. Direct delivery food buyer frictionless plugin.
           </span>
         </div>
-      </section>
+      </section> */}
       <section className="highestAPY_wrap">
         <div className="highestAPY">
           <div className="ha_title">
@@ -117,8 +120,19 @@ function InvestingList({ currentAccount, setCurrentPage }:any) {
                 <div className="stateDefault">
                   <Link
                     to={"./detail/" + item.address}
-                    state={!!item.nftSvg ? { assetAddress: item.asset, vaultInfo: item, svg: item.nftSvg }
-                    : { assetAddress: item.asset, vaultInfo: item, svg: item.vaultSvg }}
+                    state={
+                      !!item.nftSvg
+                        ? {
+                            assetAddress: item.asset,
+                            vaultInfo: item,
+                            svg: item.nftSvg,
+                          }
+                        : {
+                            assetAddress: item.asset,
+                            vaultInfo: item,
+                            svg: item.vaultSvg,
+                          }
+                    }
                     className="strategy_ctaBtn"
                     style={{ textDecoration: "none" }}
                   >
@@ -155,11 +169,11 @@ function InvestingList({ currentAccount, setCurrentPage }:any) {
                   </div>
                   <div className="hi_nftImg_wrap">
                     <div className="hi_nftImg">
-                    <object 
-                      type = "image/svg+xml" 
-                      className = "hi_nftimg" 
-                      data = {!!item.vaultSvg ? item.vaultSvg : item.nftSvg}
-                    />
+                      <object
+                        type="image/svg+xml"
+                        className="hi_nftimg"
+                        data={!!item.vaultSvg ? item.vaultSvg : item.nftSvg}
+                      />
                     </div>
                   </div>
                   <div className="hi_description">
@@ -193,9 +207,7 @@ function InvestingList({ currentAccount, setCurrentPage }:any) {
                         className="byIcon_img"
                       />
                     </div>
-                    <span className="By_Strategy_name">
-                      By {item.dacName}
-                    </span>
+                    <span className="By_Strategy_name">By {item.dacName}</span>
                   </div>
                 </div>
               </SwiperSlide>
@@ -214,9 +226,10 @@ function InvestingList({ currentAccount, setCurrentPage }:any) {
           <div className="fiat_toggle">
             <Infoicon className="info_Icon"></Infoicon>
             <span className="fiat_txt">fiat</span>
-            <div className="toggle_outline">
+            {/* <div className="toggle_outline">
               <div className="innerCircle"></div>
-            </div>
+            </div> */}
+            <ISwitcher></ISwitcher>
           </div>
           <div className="iL_list"></div>
           <div className="il_table">
