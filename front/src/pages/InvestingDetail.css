@@ -1224,7 +1224,7 @@
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
-  text-align: left;
+  text-align: right;
   color: var(--neutral-qui-neu-800);
 }
 .buyNsell .sellsection_wrap .inputAmount {
