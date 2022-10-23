@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "types": "src/index.ts",
+  "type": "module",
   "files": [
     "dist",
     "utils",
@@ -37,7 +38,10 @@
     "dotenv": "^16.0.1",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32",
-    "ts-node": "^10.9.1"
+    "node-fetch": "^3.2.10",
+    "ts-node": "^10.9.1",
+    "yesno": "^0.4.0",
+    "ethers": "^5.6.9"
   },
   "scripts": {
     "test": "hardhat test",
