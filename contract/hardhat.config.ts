@@ -70,7 +70,9 @@ const config: HardhatUserConfig | {} = {
     },
     mumbai : {
       url: process.env.MUMBAI_URL || "https://rpc-mumbai.maticvigil.com/",
-      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1, process.env.PRIVATE_KEY2]
+      accounts: {
+        mnemonic: "test test test test test test test test test test test junk",
+      }
     },
     cypress: {
       url: process.env.KLAYTN_URL || "https://public-node-api.klaytnapi.com/v1/cypress",
