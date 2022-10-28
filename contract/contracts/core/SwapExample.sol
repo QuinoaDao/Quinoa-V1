@@ -19,6 +19,8 @@ contract SwapExamples {
 
     address public constant DAI = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
     address public constant WETH9 = 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619;
+    address public constant WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270; // WMATIC on MATIC
+
     // address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
 
     // For this example, we will set the pool fee to 0.3%.
@@ -32,14 +34,13 @@ contract SwapExamples {
         return IERC20(DAI).balanceOf(address(msg.sender));
     }
     
-    function wrapEther() public payable {
+    function wrapMatic() public payable {
         uint256 amount = msg.value;
-        console.log("hello");
         if(msg.value != 0) {
-            IWETH(WETH9).deposit{value : amount}();
+            IWETH(WMATIC).deposit{value: amount}();
         }
-        require(IWETH(WETH9).balanceOf(address(this)) >= amount, "Ether not deposited");
-        IWETH(WETH9).transfer(msg.sender, IWETH(WETH9).balanceOf(address(this)));
+        require(IWETH(WMATIC).balanceOf(address(this)) >= amount, "Ether not deposited");
+        IWETH(WMATIC).transfer(msg.sender, IWETH(WMATIC).balanceOf(address(this)));
     }
 
     /// @notice swapExactInputSingle swaps a fixed amount of DAI for a maximum possible amount of WETH9
@@ -47,21 +48,21 @@ contract SwapExamples {
     /// @dev The calling address must approve this contract to spend at least `amountIn` worth of its DAI for this function to succeed.
     /// @param amountIn The exact amount of DAI that will be swapped for WETH9.
     /// @return amountOut The amount of WETH9 received.
-    function swapExactInputSingle(uint256 amountIn) external returns (uint256 amountOut) {
+    function swapExactInputSingle(uint256 amountIn, address tokenIn, address tokenOut) external returns (uint256 amountOut) {
         // msg.sender must approve this contract
 
         // Transfer the specified amount of DAI to this contract.
-        TransferHelper.safeTransferFrom(DAI, msg.sender, address(this), amountIn);
+        TransferHelper.safeTransferFrom(tokenIn, msg.sender, address(this), amountIn);
 
         // Approve the router to spend DAI.
-        TransferHelper.safeApprove(DAI, address(swapRouter), amountIn);
+        TransferHelper.safeApprove(tokenIn, address(swapRouter), amountIn);
 
         // Naively set amountOutMinimum to 0. In production, use an oracle or other data source to choose a safer value for amountOutMinimum.
         // We also set the sqrtPriceLimitx96 to be 0 to ensure we swap our exact input amount.
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
-                tokenIn: DAI,
-                tokenOut: WETH9,
+                tokenIn: tokenIn,
+                tokenOut: tokenOut,
                 fee: poolFee,
                 recipient: msg.sender,
                 deadline: block.timestamp,
