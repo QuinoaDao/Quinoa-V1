@@ -225,11 +225,11 @@ contract NftWrappingManager is ERC4907, INFTWrappingManager{
         );
     }
 
-    function deposit (
+    function deposit(
         address user,
         address vault,
         uint256 qTokenAmount
-    ) onlyRouter external
+    ) onlyRouter external returns(uint256)
     {
         DepositInfo memory _deposit = DepositInfo(vault, qTokenAmount, false);
         uint256 tokenId = _tokenIdCounter.current();
@@ -237,12 +237,13 @@ contract NftWrappingManager is ERC4907, INFTWrappingManager{
         _tokenIdCounter.increment();
         _safeMint(user,tokenId);
         _userAssets[user][vault].push(tokenId);
+        return tokenId;
     }
 
-    function deposit (
+    function deposit(
         uint256 qTokenAmount,
         uint256 tokenId
-    ) onlyRouter external
+    ) onlyRouter external 
     {
         _deposits[tokenId].qTokenAmount += qTokenAmount;
     }

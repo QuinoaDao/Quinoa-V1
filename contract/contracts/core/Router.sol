@@ -19,21 +19,12 @@ contract Router is Ownable {
     ISwapRouter public swapRouter;
     address public constant USDC = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
 
-
-    function setNFTWrappingManager(address _NFTWrappingManager) public onlyOwner {
-        NFTWrappingManager = INFTWrappingManager(_NFTWrappingManager);
-    }
-
-    uint256 public protocolFeePercent = 2e16; // 기본 fee : 2%
-
-    function updateProtocolFeePercent(uint newProtocolFee) public onlyOwner {
-        require(0 <= newProtocolFee && newProtocolFee <= 1e18, "Router: Invalid Protocol Fee Percent");
-        protocolFeePercent = newProtocolFee;
-    }
-
     address public protocolTreasury;
     IERC721 public generalNFT;
     IERC721 public guruNFT;
+
+    event Buy(address _vault, address indexed _user, address _tokenIn, uint256 _amount, uint256 _tokenId);
+    event Sell(address _vault, address indexed _user, uint256 _tokenId);
 
     constructor(address _protocolTreasury, address _generalNFT, address _guruNFT) {
         require(_generalNFT != address(0), "Router: General NFT address cannot be zero address");
@@ -44,14 +35,28 @@ contract Router is Ownable {
         protocolTreasury = _protocolTreasury;
     }
 
+    /*///////////////////////////////////////////////////////////////
+                            Configuration
+    //////////////////////////////////////////////////////////////*/
+    function updateSwapRouter(address _swapRouter) public onlyOwner {
+        require(_swapRouter != address(0), "Router: SwapRouter cannot be zero address");
+        swapRouter = ISwapRouter(_swapRouter);
+    }
+
+    function setNFTWrappingManager(address _NFTWrappingManager) public onlyOwner {
+        NFTWrappingManager = INFTWrappingManager(_NFTWrappingManager);
+    }
+
+    uint256 public protocolFeePercent = 2e16; // 기본 fee : 2%
+
     function updateProtocolTreasury(address newProtocolTreasury) public onlyOwner {
         require(newProtocolTreasury != address(0), "Router: Protocol Treasury cannot be zero address");
         protocolTreasury = newProtocolTreasury;
     }
 
-    function updateSwapRouter(address _swapRouter) public onlyOwner {
-        require(_swapRouter != address(0), "Router: SwapRouter cannot be zero address");
-        swapRouter = ISwapRouter(_swapRouter);
+    function updateProtocolFeePercent(uint newProtocolFee) public onlyOwner {
+        require(0 <= newProtocolFee && newProtocolFee <= 1e18, "Router: Invalid Protocol Fee Percent");
+        protocolFeePercent = newProtocolFee;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -83,7 +88,7 @@ contract Router is Ownable {
         // for now, it is set as the default param.
         address _tokenIn = address(assetToken);
 
-        if(IERC20(_tokenIn) == assetToken) {
+        if(_tokenIn == address(assetToken)) {
             assetToken.transferFrom(msg.sender, address(this), _amount);
             depositAmount = _amount; // TODO gas fee should be applied
         } else {
@@ -100,7 +105,9 @@ contract Router is Ownable {
         
         // _buy(_vault, address(assetToken), _amount); // TODO update param of buy func and its front interface
         qvToken.transfer(address(NFTWrappingManager), qvTokenAdded);
-        NFTWrappingManager.deposit(msg.sender, address(vault), qvTokenAdded);
+        uint _tokenId = NFTWrappingManager.deposit(msg.sender, address(vault), qvTokenAdded);
+
+        emit Buy(_vault, msg.sender, _tokenIn, _amount, _tokenId);
     }
 
     // add asset to existing NFT
@@ -117,7 +124,7 @@ contract Router is Ownable {
         // for now, it is set as the default param.
         address _tokenIn = address(assetToken);
 
-        if(IERC20(_tokenIn) == assetToken) {
+        if(_tokenIn == address(assetToken)) {
             assetToken.transferFrom(msg.sender, address(this), amount);
             depositAmount = amount; // TODO gas fee should be applied
         } else {
@@ -129,6 +136,7 @@ contract Router is Ownable {
         // send qvToken to NFTManager
         qvToken.transfer(address(NFTWrappingManager), qvTokenAdded);
         NFTWrappingManager.deposit(qvTokenAdded, tokenId);
+        emit Buy(_vault, msg.sender, _tokenIn, amount, tokenId);
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -156,8 +164,16 @@ contract Router is Ownable {
         uint256 addedAsset = vault.redeem(amount, address(this), address(this));
         require(assetToken.balanceOf(address(this)) - beforeRedeem == addedAsset, "Router: Amount of assetToken to relay has unexpected value");
         
+        
         // send asset to client
-        assetToken.transfer(msg.sender, addedAsset);
+        address _tokenOut = address(assetToken); // TODO set _tokenOut as a param
+        if(_tokenOut == address(assetToken)) {
+            assetToken.transfer(msg.sender, addedAsset);
+        } else {
+            uint assetInTokenOut = _zapIn(address(assetToken), _tokenOut, addedAsset);
+            IERC20(_tokenOut).transfer(msg.sender, assetInTokenOut);
+        }
+        emit Sell(_vault, msg.sender, tokenId);
     }
 
     /*///////////////////////////////////////////////////////////////
