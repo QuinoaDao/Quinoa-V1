@@ -40,12 +40,13 @@ const config: HardhatUserConfig | {} = {
     hardhat: {
       accounts: {
         count: 20,
+        mnemonic: "test test test test test test test test test test test junk",
       },
       // chainId: 1337,
       chainId: 137,
       forking: {
         url: process.env.ALCHEMY_MATIC_URL || "https://polygon-rpc.com/",
-        blockNumber : 34624917
+        blockNumber : 35162000
       },
       loggingEnabled: true
     },
@@ -70,7 +71,9 @@ const config: HardhatUserConfig | {} = {
     },
     mumbai : {
       url: process.env.MUMBAI_URL || "https://rpc-mumbai.maticvigil.com/",
-      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1, process.env.PRIVATE_KEY2]
+      accounts: {
+        mnemonic: "test test test test test test test test test test test junk",
+      }
     },
     cypress: {
       url: process.env.KLAYTN_URL || "https://public-node-api.klaytnapi.com/v1/cypress",

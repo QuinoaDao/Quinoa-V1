@@ -13,7 +13,7 @@ interface INFTWrappingManager is IERC721 {
             bool isFullyRedeemed
         );
 
-    function deposit (address user, address vault, uint256 qvTokenAmount) external;
+    function deposit (address user, address vault, uint256 qvTokenAmount) external returns(uint256);
 
     function deposit (uint256 qvTokenAmount, uint256 tokenId) external;
 
