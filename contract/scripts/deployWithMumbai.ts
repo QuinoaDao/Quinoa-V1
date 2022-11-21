@@ -273,7 +273,7 @@ async function vault4(deployer: any, user: any, router: any, nftManager: any, va
 
 async function main(){
     const {deployer, user, router, nftManager, vaultFactory} = await deployContracts();
-    await vault3(deployer, user, router, nftManager, vaultFactory);
+    // await vault3(deployer, user, router, nftManager, vaultFactory);
     await vault1(deployer, user, router, nftManager, vaultFactory);
     await vault2(deployer, user, router, nftManager, vaultFactory);
     await vault4(deployer, user, router, nftManager, vaultFactory);

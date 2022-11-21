@@ -11,8 +11,6 @@ const swapParams = {
 }
 
 const chainId = 137;
-
-const broadcastApiUrl = 'https://tx-gateway.1inch.io/v1.1/' + chainId + '/broadcast';
 const apiBaseUrl = 'https://api.1inch.io/v4.0/' + chainId;
 
 function apiRequestURL(methodName, queryParams) {
@@ -26,7 +24,7 @@ function checkAllowance(tokenAddress, walletAddress) {
 }
 
 async function main() {
-    const allowance = await checkAllowance(swapParams.fromTokenAddress, process.env.PUBLIC_ADDRESS);
+    const allowance = await checkAllowance(swapParams.fromTokenAddress, process.env.PUBLIC_ADDRESS_SEC);
     console.log(allowance);
 }
 

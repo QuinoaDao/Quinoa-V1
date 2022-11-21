@@ -46,7 +46,7 @@ const config: HardhatUserConfig | {} = {
       chainId: 137,
       forking: {
         url: process.env.ALCHEMY_MATIC_URL || "https://polygon-rpc.com/",
-        blockNumber : 34624917
+        blockNumber : 35162000
       },
       loggingEnabled: true
     },

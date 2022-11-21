@@ -72,7 +72,7 @@ function App() {
       
       const hardhat = '0x539'
       const mumbai = '0x13881'
-      if (chainId !== mumbai) {
+      if (chainId !== hardhat) {
         console.log("network is not in mumbai. Change Network");
         changeNetwork();
       }
@@ -86,11 +86,11 @@ function App() {
   const changeNetwork = async() => {
     const hardhat = '0x539'
     const mumbai = '0x13881'
-    if (window.ethereum.networkVersion !== mumbai) {
+    if (window.ethereum.networkVersion !== hardhat) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: mumbai }]
+            params: [{ chainId: hardhat }]
           });
         } catch (err:any) {
             // This error code indicates that the chain has not been added to MetaMask
@@ -117,7 +117,7 @@ function App() {
     const hardhat = '0x539'
     const mumbai = '0x13881'
 
-    if (chainId !== mumbai) {
+    if (chainId !== hardhat) {
       setCorrectNetwork(false)
     }else {
       setCorrectNetwork(true)
